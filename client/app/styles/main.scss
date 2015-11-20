@@ -3,6 +3,10 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
 
+html, body, .outer-container-main {
+  height: 100%;
+}
+
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -89,4 +93,15 @@ body {
   .jumbotron {
     border-bottom: 0;
   }
+}
+
+/* App Layout*/
+.sidebar {
+  width: 400px;
+  float: right;
+}
+
+/* Full Height Map */
+.angular-leaflet-map {
+  height: 100%;
 }

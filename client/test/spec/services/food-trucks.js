@@ -19,7 +19,6 @@ describe('Service: FoodTrucks', function () {
   }));
 
   it('should fetch from the correct endpoint with latitude and longitude', function () {
-    // mock API response
     $httpBackend.expectGET('/food_trucks?latitude=90&longitude=90').respond({});
     
     FoodTrucks.fetch(90, 90);
@@ -28,9 +27,10 @@ describe('Service: FoodTrucks', function () {
 
   it('should fetch a list of food trucks and pass to a success callback', function () {
     // $http success handler
-    var onSuccess = function (response) {
+    var onSuccess = function(response) {
       foodTrucks = response.data;
     };
+
     // mock API response
     $httpBackend.whenGET('/food_trucks?latitude=90&longitude=90').respond(readJSON('test/mock/food-trucks-list.json'));
     

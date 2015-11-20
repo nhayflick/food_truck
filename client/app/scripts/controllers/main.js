@@ -9,9 +9,9 @@
  */
 angular.module('foodTruckApp')
   .controller('MainCtrl', function ($scope) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+    $scope.center = {
+      lat: 37.7833,
+      lng: -122.4167,
+      zoom: 12
+    }
   });
