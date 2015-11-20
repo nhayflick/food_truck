@@ -34,5 +34,46 @@ angular.module('foodTruckApp')
       });
     };
 
+     /**
+     * @ngdoc method
+     * @name FoodTrucks#getMarkers
+     *
+     * @description
+     * Transform a list of food trucks into a Leaflet marker dictionary
+     *
+     * @param {Array} trucks - Collection of food trucks
+     *
+     * @returns {Object} Leaflet marker dictionary of trucks
+     */
+
+    this.getMarkers = function (trucks) {
+      var markers = {};
+
+      if (!trucks) {return markers;}
+
+      trucks.forEach(function(truck) {
+        // Only include trucks with valid locations
+        if (!truck.location) {
+          return false;
+        }
+
+        var currMarker = {
+          lat: parseFloat(truck.location.latitude),
+          lng: parseFloat(truck.location.longitude),
+          draggable: false,
+          label: {
+            message: truck.applicant,
+            options: {
+              noHide: true
+            }
+          }
+        };
+
+        markers[truck.objectid] = currMarker;
+      });
+
+      return markers;
+    };
+
     return this;
   });
