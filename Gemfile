@@ -11,6 +11,8 @@ gem 'rspec-rails', :group => :test
 
 gem 'pg'
 
+gem 'geocoder'
+
 
 
 # To use ActiveModel has_secure_password

@@ -4,7 +4,11 @@ class TrucksController < ApplicationController
   # GET /trucks
   # GET /trucks.json
   def index
-    @trucks = Truck.all
+    if params[:search].present?
+      @trucks = Truck.near(params[:search], 1, :order => 'distance')
+    else
+      @trucks = Truck.all
+    end
 
     render json: @trucks
   end
