@@ -1,7 +1,7 @@
-<div>
-	<div ng-repeat="trucksList.ftTrucks">
-		{{trucks.applicant}}
-		{{trucks.fooditems}}
-		{{trucks.locationdescription}}
-	</div>	
+<ul class="list-group">
+	<li class="list-group-item" ng-repeat="truck in trucksList.ftTrucks">
+		<h4>{{truck.applicant}}</h4>
+		<h6>{{truck.fooditems}}</h6>
+		<p>{{truck.locationdescription}}</p>
+	</li>	
 </div>

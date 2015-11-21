@@ -58,14 +58,14 @@ angular.module('foodTruckApp')
 			},
 			leafletEvents: {
 				map: {
-					enable: ['drag'],
+					enable: ['dragend'],
 					logic: 'emit'
 				}
 			}
 		});
 
 		// Fetch Trucks when Leaflet drag detected
-		$scope.$on('leafletDirectiveMap.drag', fetchNearbyFoodTrucks);
+		$scope.$on('leafletDirectiveMap.dragend', fetchNearbyFoodTrucks);
 
 		fetchNearbyFoodTrucks();
 	});

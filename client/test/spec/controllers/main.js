@@ -76,7 +76,7 @@ describe('Controller: MainCtrl', function() {
 		it('should listen for leaflet\'s drag event and requery for food trucks', function() {
 			MainCtrl.center.lat += 1;
 
-			scope.$broadcast('leafletDirectiveMap.drag', {});
+			scope.$broadcast('leafletDirectiveMap.dragend', {});
 
 			expect(FoodTrucks.fetch).toHaveBeenCalledWith(MainCtrl.center.lat, MainCtrl.center.lng);
 
