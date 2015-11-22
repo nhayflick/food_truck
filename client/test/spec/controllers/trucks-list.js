@@ -6,7 +6,6 @@ describe('Controller: TrucksListCtrl', function() {
 	beforeEach(module('foodTruckApp'));
 
 	var TrucksListCtrl,
-		expected,
 		scope;
 
 	// Initialize the controller and a mock scope

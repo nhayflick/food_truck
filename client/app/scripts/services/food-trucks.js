@@ -17,19 +17,18 @@ angular.module('foodTruckApp')
      * @description
      * Fetch a list of food trucks from the API
      *
-     * @param {number} latitude - Query Latitude
-     * @param {number} longitude - Query Longitude
+     * @param {number} lat - Query Latitude
+     * @param {number} lng - Query Longitude
      *
      * @returns {Array} list of food truck results
      */
 
-    this.fetch = function (latitude, longitude) {
+    this.fetch = function (lat, lng) {
       return $http({
         method: 'GET',
-        url: '/food_trucks',
+        url: 'api/trucks',
         params: {
-          latitude: latitude,
-          longitude: longitude
+          search: [lat,lng].join(',')
         }
       });
     };
@@ -53,23 +52,25 @@ angular.module('foodTruckApp')
 
       trucks.forEach(function(truck) {
         // Only include trucks with valid locations
-        if (!truck.location) {
+        if (!truck.lat || !truck.lat) {
           return false;
         }
 
         var currMarker = {
-          lat: parseFloat(truck.location.latitude),
-          lng: parseFloat(truck.location.longitude),
+          lat: parseFloat(truck.lat),
+          lng: parseFloat(truck.lng),
           draggable: false,
+          focus: true,
+          title: truck.name,
           label: {
-            message: truck.applicant,
+            message: truck.name,
             options: {
-              noHide: true
+              noHide: true,
             }
           }
         };
 
-        markers[truck.objectid] = currMarker;
+        markers[truck.id] = currMarker;
       });
 
       return markers;

@@ -98,10 +98,13 @@ body {
 /* App Layout*/
 .sidebar {
   width: 400px;
+  height: 100%;
   float: right;
+  overflow: scroll;
 }
 
 /* Full Height Map */
 .angular-leaflet-map {
   height: 100%;
+  margin-right: 400px;
 }

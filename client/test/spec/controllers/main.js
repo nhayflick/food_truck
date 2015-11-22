@@ -8,8 +8,8 @@ describe('Controller: MainCtrl', function() {
 	var MainCtrl,
 		FoodTrucks,
 		scope,
-		expectedResponse,
 		expectedMarkers,
+    expectedResponse,
 		$q;
 
 	// Initialize the controller and a mock scope
@@ -21,19 +21,6 @@ describe('Controller: MainCtrl', function() {
 			status: 200,
 			data: readJSON('test/mock/food-trucks-list.json')
 		};
-		expectedMarkers = {
-			305715: {
-				lat: 37.7917780021754,
-				lng: -122.397517086459,
-				draggable: false,
-				label: {
-					message: 'Bombay Blvd.',
-					options: {
-						noHide: true
-					}
-				}
-			}
-		};
 		scope = $rootScope.$new();
 
 		spyOn(FoodTrucks, 'fetch').and.callFake(function() {
@@ -41,7 +28,7 @@ describe('Controller: MainCtrl', function() {
 				then: function(callback) {
 					return callback(expectedResponse);
 				}
-			}
+			};
 		});
 		spyOn(FoodTrucks, 'getMarkers').and.callThrough();
 
@@ -55,9 +42,11 @@ describe('Controller: MainCtrl', function() {
 
 		it('should set the leaflet center object on the controller', function() {
 
+      var expected = [MainCtrl.center.lat, MainCtrl.center.lng].join(',');
+
 			expect(MainCtrl.center.lat).toBe(37.7833);
 			expect(MainCtrl.center.lng).toBe(-122.4167);
-			expect(MainCtrl.center.zoom).toBe(12);
+			expect(MainCtrl.center.zoom).toBe(16);
 
 		});
 
@@ -65,7 +54,6 @@ describe('Controller: MainCtrl', function() {
 
 			expect(FoodTrucks.fetch).toHaveBeenCalledWith(MainCtrl.center.lat, MainCtrl.center.lng);
 			expect(FoodTrucks.getMarkers).toHaveBeenCalledWith(expectedResponse.data);
-			expect(MainCtrl.truckMarkers).toEqual(expectedMarkers);
 
 		});
 
@@ -73,12 +61,26 @@ describe('Controller: MainCtrl', function() {
 
 	describe('while listening for map drags', function() {
 
-		it('should listen for leaflet\'s drag event and requery for food trucks', function() {
-			MainCtrl.center.lat += 1;
+		it('should listen for leaflet\'s drag event and requery with updated coodinates', function() {
 
-			scope.$broadcast('leafletDirectiveMap.dragend', {});
+      var leafletObj = {
+        leafletEvent: {
+          target: {
+            getCenter: function () {
+              return {
+                lat: MainCtrl.center.lat += 1, 
+                lng: MainCtrl.center.lng += 1
+              };
+            }
+          }
+        }
+      }, 
+      expectedLat = MainCtrl.center.lat + 1, 
+      expectedLng = MainCtrl.center.lng + 1;
 
-			expect(FoodTrucks.fetch).toHaveBeenCalledWith(MainCtrl.center.lat, MainCtrl.center.lng);
+			scope.$broadcast('leafletDirectiveMap.dragend', leafletObj);
+
+			expect(FoodTrucks.fetch).toHaveBeenCalledWith(expectedLat, expectedLng);
 
 		});
 

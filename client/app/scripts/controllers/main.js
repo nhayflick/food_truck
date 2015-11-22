@@ -18,8 +18,16 @@ angular.module('foodTruckApp')
 		 * @description Query for nearby foodtrucks and pass to success callback
 		 */
 
-		function fetchNearbyFoodTrucks() {
-			FoodTrucks.fetch(main.center.lat, main.center.lng).then(onFetchSuccess, onFetchError);
+		function fetchNearbyFoodTrucks(event, args) {
+			var lat = main.center.lat,
+				lng = main.center.lng;
+			// Check for new map center
+			if (typeof args !== 'undefined') {
+				var newCenter = args.leafletEvent.target.getCenter();
+				lat = newCenter.lat;
+				lng = newCenter.lng;
+			}
+			FoodTrucks.fetch(lat, lng).then(onFetchSuccess, onFetchError);
 		}
 
 		/**
@@ -54,7 +62,7 @@ angular.module('foodTruckApp')
 			center: {
 				lat: 37.7833,
 				lng: -122.4167,
-				zoom: 12
+				zoom: 16
 			},
 			leafletEvents: {
 				map: {
@@ -64,8 +72,14 @@ angular.module('foodTruckApp')
 			}
 		});
 
-		// Fetch Trucks when Leaflet drag detected
+		// Fetch Trucks when drag stops
 		$scope.$on('leafletDirectiveMap.dragend', fetchNearbyFoodTrucks);
+
+		// $scope.$watch('main.center.lat', function (newVal, oldVal) {
+  //     if (oldVal && newVal !== oldVal) {
+  //       fetchNearbyFoodTrucks();
+  //     }
+  //   });
 
 		fetchNearbyFoodTrucks();
 	});

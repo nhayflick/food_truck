@@ -24,7 +24,7 @@ describe('Service: FoodTrucks', function () {
 
     it('should fetch from the correct endpoint with latitude and longitude', function () {
       
-      $httpBackend.expectGET('/food_trucks?latitude=90&longitude=90').respond({});
+      $httpBackend.expectGET('api/trucks?search=90,90').respond({});
       
       FoodTrucks.fetch(90, 90);
       $httpBackend.flush();
@@ -39,7 +39,7 @@ describe('Service: FoodTrucks', function () {
         };
 
       // mock API response
-      $httpBackend.expectGET('/food_trucks?latitude=90&longitude=90').respond(readJSON('test/mock/food-trucks-list.json'));
+      $httpBackend.expectGET('api/trucks?search=90,90').respond(readJSON('test/mock/food-trucks-list.json'));
       
       FoodTrucks.fetch(90, 90).then(onSuccess);
       $httpBackend.flush();
@@ -60,18 +60,26 @@ describe('Service: FoodTrucks', function () {
       markers = FoodTrucks.getMarkers(foodTrucks);
 
       expect(markers).toEqual(jasmine.any(Object));
-      expect(markers[305715]).toEqual(jasmine.any(Object));
+      expect(Object.keys(markers).length).toEqual(3);
+  
+      angular.forEach(foodTrucks, function(truck) {
+        expect(markers[truck.id]).toEqual(jasmine.any(Object));
+      });
 
     });
 
     it('should only return markers with valid lat + long', function () {
       
       foodTrucks = readJSON('test/mock/food-trucks-list.json');
+      foodTrucks.push({id: 0});
       markers = FoodTrucks.getMarkers(foodTrucks);
 
-      expect(Object.keys(markers).length).toEqual(1);
-      expect(markers[305715].lat).toEqual(37.7917780021754);
-      expect(markers[305715].lng).toEqual(-122.397517086459);
+      expect(Object.keys(markers).length).toEqual(foodTrucks.length - 1);
+
+      angular.forEach(markers, function(marker) {
+        expect(marker.lat).toEqual(jasmine.any(Number));
+        expect(marker.lng).toEqual(jasmine.any(Number));
+      });
 
     });
 
