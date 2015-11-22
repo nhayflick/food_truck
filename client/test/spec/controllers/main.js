@@ -19,7 +19,12 @@ describe('Controller: MainCtrl', function() {
 		FoodTrucks = _FoodTrucks_;
 		expectedResponse = {
 			status: 200,
-			data: readJSON('test/mock/food-trucks-list.json')
+			data: {
+        lat: 37.7833,
+        lng: -122.4167,
+        address: '555 Eddy St, San Francisco, CA 94109, USA',
+        trucks: readJSON('test/mock/food-trucks-list.json')
+      }
 		};
 		scope = $rootScope.$new();
 
@@ -42,8 +47,6 @@ describe('Controller: MainCtrl', function() {
 
 		it('should set the leaflet center object on the controller', function() {
 
-      var expected = [MainCtrl.center.lat, MainCtrl.center.lng].join(',');
-
 			expect(MainCtrl.center.lat).toBe(37.7833);
 			expect(MainCtrl.center.lng).toBe(-122.4167);
 			expect(MainCtrl.center.zoom).toBe(16);
@@ -53,7 +56,8 @@ describe('Controller: MainCtrl', function() {
 		it('should fetch and parse a list of food trucks from the venue\'s starting location', function() {
 
 			expect(FoodTrucks.fetch).toHaveBeenCalledWith(MainCtrl.center.lat, MainCtrl.center.lng);
-			expect(FoodTrucks.getMarkers).toHaveBeenCalledWith(expectedResponse.data);
+			expect(FoodTrucks.getMarkers).toHaveBeenCalledWith(expectedResponse.data.trucks);
+      expect(MainCtrl.address).toBe('555 Eddy St, San Francisco, CA 94109, USA');
 
 		});
 
@@ -61,24 +65,15 @@ describe('Controller: MainCtrl', function() {
 
 	describe('while listening for map drags', function() {
 
-		it('should listen for leaflet\'s drag event and requery with updated coodinates', function() {
+		it('should listen for leaflet\'s move event and requery with updated coodinates', function() {
 
-      var leafletObj = {
-        leafletEvent: {
-          target: {
-            getCenter: function () {
-              return {
-                lat: MainCtrl.center.lat += 1, 
-                lng: MainCtrl.center.lng += 1
-              };
-            }
-          }
-        }
-      }, 
-      expectedLat = MainCtrl.center.lat + 1, 
-      expectedLng = MainCtrl.center.lng + 1;
+      var expectedLat = MainCtrl.center.lat + 1,
+        expectedLng = MainCtrl.center.lng + 1;
 
-			scope.$broadcast('leafletDirectiveMap.dragend', leafletObj);
+      MainCtrl.center.lat++;
+      MainCtrl.center.lng++;
+
+			scope.$broadcast('leafletDirectiveMap.moveend');
 
 			expect(FoodTrucks.fetch).toHaveBeenCalledWith(expectedLat, expectedLng);
 

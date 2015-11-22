@@ -24,9 +24,19 @@ describe('Service: FoodTrucks', function () {
 
     it('should fetch from the correct endpoint with latitude and longitude', function () {
       
-      $httpBackend.expectGET('api/trucks?search=90,90').respond({});
+      $httpBackend.expectGET('api/trucks/search?lat=90&lng=90').respond({});
       
       FoodTrucks.fetch(90, 90);
+      $httpBackend.flush();
+
+    });
+
+
+    it('should fetch from the correct endpoint with address', function () {
+      
+      $httpBackend.expectGET('api/trucks/search?address=555+Eddy+St').respond({});
+      
+      FoodTrucks.fetch(false, false , '555 Eddy St');
       $httpBackend.flush();
 
     });
@@ -39,12 +49,27 @@ describe('Service: FoodTrucks', function () {
         };
 
       // mock API response
-      $httpBackend.expectGET('api/trucks?search=90,90').respond(readJSON('test/mock/food-trucks-list.json'));
+      $httpBackend.expectGET('api/trucks/search?lat=90&lng=90').respond(readJSON('test/mock/food-trucks-list.json'));
       
       FoodTrucks.fetch(90, 90).then(onSuccess);
       $httpBackend.flush();
       
       expect(foodTrucks.length).toBe(3);
+
+    });
+
+    it('should cancel earlier pending requests', function () {
+      
+      $httpBackend.expectGET('api/trucks/search?address=555+Eddy+St').respond({});
+      $httpBackend.expectGET('api/trucks/search?address=570+Eddy+St').respond({});
+      
+      var firstRequest = FoodTrucks.fetch(false, false , '555 Eddy St');
+      var secondRequest = FoodTrucks.fetch(false, false , '570 Eddy St');
+
+      $httpBackend.flush();
+
+      expect(firstRequest.$$state.value.status).toBe(-1);
+      expect(secondRequest.$$state.value.status).toBe(200);
 
     });
 

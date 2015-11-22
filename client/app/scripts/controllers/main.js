@@ -18,25 +18,27 @@ angular.module('foodTruckApp')
 		 * @description Query for nearby foodtrucks and pass to success callback
 		 */
 
-		function fetchNearbyFoodTrucks(event, args) {
-
-			// Clear Focus in UI
-			main.focusId = 0;
+		function fetchNearbyFoodTrucks() {
 
 			var lat = main.center.lat,
 				lng = main.center.lng;
-			// Check for new map center
-			if (typeof args !== 'undefined') {
-				var newCenter = args.leafletEvent.target.getCenter();
-				lat = newCenter.lat;
-				lng = newCenter.lng;
-			}
 
 			FoodTrucks.fetch(lat, lng).then(onFetchSuccess, onFetchError);
+
+			// Clear Focus in UI
+			main.focusId = 0;
 		}
 
 
-		// TODO: docs and test this
+		/**
+		 * @ngdoc function
+		 * @name fetchByAddress
+		 * @description Query for nearby foodtrucks by address
+		 *
+		 * @param {string} address - address to geocode against on server
+		 *
+		 */
+
 		function fetchByAddress(address) {
 			FoodTrucks.fetch(false, false, address).then(onFetchSuccess, onFetchError);
 		}
@@ -51,11 +53,15 @@ angular.module('foodTruckApp')
 		 */
 
 		function onFetchSuccess(response) {
-			main.trucks = response.data.trucks;
+			// Process response
+			angular.extend(main, {
+				serverError: false,
+				trucks: response.data.trucks,
+				address: response.data.address,
+				truckMarkers: FoodTrucks.getMarkers(response.data.trucks)
+			});
 			main.center.lat = parseFloat(response.data.lat);
 			main.center.lng = parseFloat(response.data.lng);
-			main.address = response.data.address;
-			main.truckMarkers = FoodTrucks.getMarkers(response.data.trucks);
 		}
 
 		/**
@@ -68,7 +74,9 @@ angular.module('foodTruckApp')
 		 */
 
 		function onFetchError(response) {
-
+			if (status > 0) {
+				main.serverError = true;
+			}
 		}
 
 		/**
@@ -103,7 +111,7 @@ angular.module('foodTruckApp')
 			fetchByAddress: fetchByAddress
 		});
 
-		// Fetch Trucks when drag stops
+		// Fetch Trucks when movement stops
 		$scope.$on('leafletDirectiveMap.moveend', fetchNearbyFoodTrucks);
 
 		// Find focused Truck on click

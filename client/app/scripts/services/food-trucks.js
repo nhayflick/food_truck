@@ -8,7 +8,9 @@
  * Factory to instantiate a foodTrucks singleton
  */
 angular.module('foodTruckApp')
-  .factory('FoodTrucks', function ($http) {
+  .factory('FoodTrucks', function ($http, $q) {
+
+    var _canceler;
 
     /**
      * @ngdoc method
@@ -27,6 +29,7 @@ angular.module('foodTruckApp')
 
     this.fetch = function (lat, lng, address) {
       var params;
+
       if (lat && lng) {
         params = {
           lat: lat, 
@@ -39,9 +42,14 @@ angular.module('foodTruckApp')
       } else {
         return false;
       }
+      if (_canceler) {
+        _canceler.resolve();
+      }
+      _canceler = $q.defer();
       return $http({
         method: 'GET',
         url: 'api/trucks/search',
+        timeout: _canceler.promise,
         params: params
       });
     };
