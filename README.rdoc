@@ -7,10 +7,11 @@ Create a service that tells the user what types of food trucks might be found ne
 The data is available on DataSF: Food Trucks
 
 = Tech Stack
- * AngularJS for frontend framework
- * Leaflet for mapping
- * Jasmine for Unit Testing
- * Protractor for Integration Testing
- * Ruby on Rails API for the backend
+
+- AngularJS for frontend framework
+- Leaflet for mapping
+- Jasmine for Unit Testing
+- Protractor for Integration Testing
+- Ruby on Rails API for the backend
 
 
