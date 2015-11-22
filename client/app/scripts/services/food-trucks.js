@@ -67,7 +67,13 @@ angular.module('foodTruckApp')
             options: {
               noHide: true,
             }
-          }
+          },
+          icon: {
+              icon: 'cutlery',
+              type: 'awesomeMarker',
+              markerColor: 'black',
+              iconColor: 'white'
+          },
         };
 
         markers[truck.id] = currMarker;

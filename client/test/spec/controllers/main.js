@@ -86,4 +86,16 @@ describe('Controller: MainCtrl', function() {
 
 	});
 
+  describe('while listening for marker events', function() {
+
+    it('highlight the correct marker on click', function() {
+
+    });
+
+    it('unhighlight all unclicked markers', function() {
+
+    });
+
+  });
+
 });

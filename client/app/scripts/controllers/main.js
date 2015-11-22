@@ -19,6 +19,9 @@ angular.module('foodTruckApp')
 		 */
 
 		function fetchNearbyFoodTrucks(event, args) {
+			// Clear Focus in UI
+			main.focusId = 0;
+
 			var lat = main.center.lat,
 				lng = main.center.lng;
 			// Check for new map center
@@ -57,6 +60,19 @@ angular.module('foodTruckApp')
 
 		}
 
+		/**
+		 * @ngdoc function
+		 * @name focusOnTruck
+		 * @description Find truck by id, set marker color to highligh state and reset remaining markers
+		 *
+		 * @param {string} targetId - key to match in truckMarkers colleciton
+		 * 
+		 */
+
+		function focusOnTruck(targetId) {
+			main.focusId = targetId;
+		}
+
 		// Bind settings and initial data to controller
 		angular.extend(main, {
 			center: {
@@ -68,18 +84,33 @@ angular.module('foodTruckApp')
 				map: {
 					enable: ['dragend'],
 					logic: 'emit'
+				},
+				markers: {
+
 				}
 			}
 		});
 
 		// Fetch Trucks when drag stops
 		$scope.$on('leafletDirectiveMap.dragend', fetchNearbyFoodTrucks);
+		$scope.$on('leafletDirectiveMap.zoomend', fetchNearbyFoodTrucks);
 
-		// $scope.$watch('main.center.lat', function (newVal, oldVal) {
-  //     if (oldVal && newVal !== oldVal) {
-  //       fetchNearbyFoodTrucks();
-  //     }
-  //   });
+		// Find focused Truck on click
+		$scope.$on('leafletDirectiveMarker.click', function(event, args){
+			focusOnTruck(args.modelName);
+		});
+
+		$scope.$watch('main.focusId', function(newValue, oldValue) {
+			if (newValue && newValue !== oldValue) {
+				angular.forEach(main.truckMarkers, function (truck, currId) {
+					if (parseInt(currId) === parseInt(newValue)) {
+						truck.icon.markerColor = 'blue';
+					} else {
+						truck.icon.markerColor = 'black';
+					}
+				});
+			}
+		})
 
 		fetchNearbyFoodTrucks();
 	});

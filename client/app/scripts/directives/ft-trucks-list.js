@@ -11,7 +11,8 @@ angular.module('foodTruckApp')
 		return {
 			scope: {},
 			bindToController: {
-				ftTrucks: '='
+				ftTrucks: '=',
+				ftFocusId: '='
 			},
 			restrict: 'E',
 			controller: function ftTrucksListCtrl() {

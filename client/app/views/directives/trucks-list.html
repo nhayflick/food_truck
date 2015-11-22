@@ -1,7 +1,10 @@
 <ul class="list-group">
-	<li class="list-group-item" ng-repeat="truck in trucksList.ftTrucks">
+	<li ng-class="{'list-group-cadet-blue': trucksList.ftFocusId==truck.id}" ng-click="trucksList.ftFocusId = truck.id" class="list-group-item" ng-repeat="truck in trucksList.ftTrucks">
 		<h4>{{truck.name}}</h4>
-		<h6>{{truck.food_description}}</h6>
-		<p>{{truck.location_description}}</p>
+    <div ng-show="trucksList.ftFocusId == truck.id">
+      <h6>{{truck.location_description}}</h6>
+  		<p>{{truck.food_description}}</p>
+      <p>{{truck.hours_description}}</p>
+    </div>
 	</li>	
 </div>
