@@ -1,28 +1,16 @@
-== README
+== SF Food Trucks
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+= Assignment
 
-Things you may want to cover:
+Create a service that tells the user what types of food trucks might be found near a specific location on a map.
 
-* Ruby version
+The data is available on DataSF: Food Trucks
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+= Tech Stack
+ * AngularJS for frontend framework
+ * Leaflet for mapping
+ * Jasmine for Unit Testing
+ * Protractor for Integration Testing
+ * Ruby on Rails API for the backend
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
