@@ -16,8 +16,7 @@ html, body, .outer-container-main {
 
 /* Space out content a bit */
 body {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-bottom: 64px;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -101,6 +100,11 @@ body {
   height: 100%;
   float: right;
   overflow: scroll;
+}
+
+/* Override Navbar*/
+.navbar {
+  margin-bottom: 0;
 }
 
 /* Full Height Map */

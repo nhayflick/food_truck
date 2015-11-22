@@ -1,3 +1,20 @@
+<nav class="navbar navbar-default navbar-static-top">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <h3>SF Truck Finder</h3>
+      </div>
+      <div class="col-md-6 offset-md-3">
+        <h3 class="input-group">
+          <input type="text" ng-model="main.address" class="form-control" placeholder="Search By Address...">
+          <span class="input-group-btn">
+            <button ng-click="main.fetchByAddress(main.address)" class="btn btn-default" type="button">Go!</button>
+          </span>
+        </h3>
+      </div >
+    </div>
+  </div>
+</nav>
 <ft-trucks-list ft-trucks="main.trucks" ft-focus-id="main.focusId" class="sidebar">
 </ft-trucks-list>
 <leaflet lf-center="main.center" markers="main.truckMarkers" zoom="4" >

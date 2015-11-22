@@ -1,6 +1,7 @@
 <ul class="list-group">
 	<li ng-class="{'list-group-cadet-blue': trucksList.ftFocusId==truck.id}" ng-click="trucksList.ftFocusId = truck.id" class="list-group-item" ng-repeat="truck in trucksList.ftTrucks">
 		<h4>{{truck.name}}</h4>
+    <!-- todo: strict equality here -->
     <div ng-show="trucksList.ftFocusId == truck.id">
       <h6>{{truck.location_description}}</h6>
   		<p>{{truck.food_description}}</p>

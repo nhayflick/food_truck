@@ -19,6 +19,7 @@ angular.module('foodTruckApp')
 		 */
 
 		function fetchNearbyFoodTrucks(event, args) {
+
 			// Clear Focus in UI
 			main.focusId = 0;
 
@@ -30,7 +31,14 @@ angular.module('foodTruckApp')
 				lat = newCenter.lat;
 				lng = newCenter.lng;
 			}
+
 			FoodTrucks.fetch(lat, lng).then(onFetchSuccess, onFetchError);
+		}
+
+
+		// TODO: docs and test this
+		function fetchByAddress(address) {
+			FoodTrucks.fetch(false, false, address).then(onFetchSuccess, onFetchError);
 		}
 
 		/**
@@ -43,8 +51,11 @@ angular.module('foodTruckApp')
 		 */
 
 		function onFetchSuccess(response) {
-			main.trucks = response.data;
-			main.truckMarkers = FoodTrucks.getMarkers(response.data);
+			main.trucks = response.data.trucks;
+			main.center.lat = parseFloat(response.data.lat);
+			main.center.lng = parseFloat(response.data.lng);
+			main.address = response.data.address;
+			main.truckMarkers = FoodTrucks.getMarkers(response.data.trucks);
 		}
 
 		/**
@@ -82,18 +93,18 @@ angular.module('foodTruckApp')
 			},
 			leafletEvents: {
 				map: {
-					enable: ['dragend'],
+					enable: ['moveend'],
 					logic: 'emit'
 				},
 				markers: {
 
 				}
-			}
+			},
+			fetchByAddress: fetchByAddress
 		});
 
 		// Fetch Trucks when drag stops
-		$scope.$on('leafletDirectiveMap.dragend', fetchNearbyFoodTrucks);
-		$scope.$on('leafletDirectiveMap.zoomend', fetchNearbyFoodTrucks);
+		$scope.$on('leafletDirectiveMap.moveend', fetchNearbyFoodTrucks);
 
 		// Find focused Truck on click
 		$scope.$on('leafletDirectiveMarker.click', function(event, args){

@@ -23,13 +23,26 @@ angular.module('foodTruckApp')
      * @returns {Array} list of food truck results
      */
 
-    this.fetch = function (lat, lng) {
+     // TODO: Throttle this
+
+    this.fetch = function (lat, lng, address) {
+      var params;
+      if (lat && lng) {
+        params = {
+          lat: lat, 
+          lng: lng
+        }
+      } else if (address) {
+        params = {
+          address: address
+        }
+      } else {
+        return false;
+      }
       return $http({
         method: 'GET',
-        url: 'api/trucks',
-        params: {
-          search: [lat,lng].join(',')
-        }
+        url: 'api/trucks/search',
+        params: params
       });
     };
 
@@ -52,7 +65,7 @@ angular.module('foodTruckApp')
 
       trucks.forEach(function(truck) {
         // Only include trucks with valid locations
-        if (!truck.lat || !truck.lat) {
+        if (!truck.lat || !truck.lng) {
           return false;
         }
 
