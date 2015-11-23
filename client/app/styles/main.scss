@@ -96,7 +96,7 @@ body {
 
 /* App Layout*/
 .sidebar {
-  width: 400px;
+  width: 350px;
   height: 100%;
   float: right;
   overflow: scroll;
@@ -107,15 +107,30 @@ body {
   margin-bottom: 0;
 }
 
+.navbar-inverse .navbar-text {
+  color: white;
+}
+
+.btn.btn-themed {
+  background-color: #4BA5D0;
+  color: white;
+}
+
 /* Full Height Map */
 .angular-leaflet-map {
   height: 100%;
-  margin-right: 400px;
+  margin-right: 350px;
 }
 
 /* Override Awesome-Marker */
 .awesome-marker i {
   font-size: 14px;
+}
+
+.list-group-item {
+  background-color: #222;
+  color: white;
+  border: 1px solid #545454;
 }
 
 .list-group-cadet-blue {

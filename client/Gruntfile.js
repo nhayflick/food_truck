@@ -111,6 +111,7 @@ module.exports = function (grunt) {
           port: 9001,
           middleware: function (connect) {
             return [
+              require('grunt-connect-proxy/lib/utils').proxyRequest,
               connect.static('.tmp'),
               connect.static('test'),
               connect().use(
@@ -448,6 +449,7 @@ module.exports = function (grunt) {
     'clean:server',
     'concurrent:test',
     'autoprefixer',
+    'configureProxies',
     'connect:test',
     'karma',
     'protractor_webdriver',
