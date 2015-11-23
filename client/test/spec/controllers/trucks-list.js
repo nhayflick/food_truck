@@ -18,7 +18,7 @@ describe('Controller: TrucksListCtrl', function() {
 		});
 	}));
 
-	it('should attach a list of awesomeThings to the scope', function() {
+	it('should attach a collection of trucks to the scope', function() {
 
 		var expected = readJSON('test/mock/food-trucks-list.json');
 		expect(TrucksListCtrl.ftTrucks).toEqual(expected);

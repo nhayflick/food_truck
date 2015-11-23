@@ -21,6 +21,7 @@ angular.module('foodTruckApp')
      *
      * @param {number} lat - Query Latitude
      * @param {number} lng - Query Longitude
+     * @param {string} address - Query Address
      *
      * @returns {Array} list of food truck results
      */

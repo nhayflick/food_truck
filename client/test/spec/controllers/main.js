@@ -10,12 +10,14 @@ describe('Controller: MainCtrl', function() {
 		scope,
 		expectedMarkers,
     expectedResponse,
+    $filter,
 		$q;
 
 	// Initialize the controller and a mock scope
-	beforeEach(inject(function($controller, _$q_, _FoodTrucks_, $rootScope) {
+	beforeEach(inject(function($controller, _$q_, _$filter_, _FoodTrucks_, $rootScope) {
 
 		$q = _$q_;
+    $filter = _$filter_;
 		FoodTrucks = _FoodTrucks_;
 		expectedResponse = {
 			status: 200,
@@ -40,6 +42,8 @@ describe('Controller: MainCtrl', function() {
 		MainCtrl = $controller('MainCtrl', {
 			$scope: scope
 		});
+
+    scope.$digest();
 
 	}));
 
@@ -83,13 +87,25 @@ describe('Controller: MainCtrl', function() {
 
   describe('while listening for marker events', function() {
 
-    it('highlight the correct marker on click', function() {
+    it('should highlight the correct marker on selection', function() {
+
+      expect(MainCtrl.focusId).toBe(0);
+      expect(MainCtrl.truckMarkers[1].icon.markerColor).toBe('black');
+
+      MainCtrl.focusId = 1;
+      // trigger $watch expression
+      scope.$digest();
+
+      expect(MainCtrl.truckMarkers[1].icon.markerColor).toBe('blue');
+
+      MainCtrl.focusId = 2;
+      // trigger $watch expression
+      scope.$digest();
+      expect(MainCtrl.truckMarkers[1].icon.markerColor).toBe('black');
+      expect(MainCtrl.truckMarkers[2].icon.markerColor).toBe('blue');
 
     });
 
-    it('unhighlight all unclicked markers', function() {
-
-    });
 
   });
 

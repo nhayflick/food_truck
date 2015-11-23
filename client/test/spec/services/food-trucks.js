@@ -16,10 +16,21 @@ describe('Service: FoodTrucks', function () {
 
   describe('fetching from food_trucks API', function() {
 
-    var $httpBackend;
+    var $httpBackend, 
+      onSuccess,
+      onError,
+      expectedResponse = {
+        lat: 37.7833,
+        lng: -122.4167,
+        address: '555 Eddy St, San Francisco, CA 94109, USA',
+        trucks: readJSON('test/mock/food-trucks-list.json')
+      },
+      expectedErrorResponse = {error: 'Bad Request'};
 
     beforeEach(inject(function (_$httpBackend_) {
       $httpBackend = _$httpBackend_;
+      onSuccess = jasmine.createSpy('onSuccess');
+      onError = jasmine.createSpy('onError');
     }));
 
     it('should fetch from the correct endpoint with latitude and longitude', function () {
@@ -42,19 +53,27 @@ describe('Service: FoodTrucks', function () {
     });
 
     it('should fetch a list of food trucks and pass to a success callback', function () {
-      var foodTrucks,
-        // $http success handler
-        onSuccess = function(response) {
-          foodTrucks = response.data;
-        };
-
       // mock API response
-      $httpBackend.expectGET('api/trucks/search?lat=90&lng=90').respond(readJSON('test/mock/food-trucks-list.json'));
+      $httpBackend.expectGET('api/trucks/search?lat=90&lng=90').respond(expectedResponse);
       
-      FoodTrucks.fetch(90, 90).then(onSuccess);
+      FoodTrucks.fetch(90, 90).then(onSuccess, onError);
       $httpBackend.flush();
       
-      expect(foodTrucks.length).toBe(3);
+      expect(onSuccess).toHaveBeenCalled();
+      expect(onError).not.toHaveBeenCalled();
+
+    });
+
+    it('should call an error handler if the request fails', function () {
+
+      // mock API response
+      $httpBackend.expectGET('api/trucks/search?lat=90&lng=90').respond(422, {error: 'Invalid Query'});
+      
+      FoodTrucks.fetch(90, 90).then(onSuccess, onError);
+      $httpBackend.flush();
+      
+      expect(onError).toHaveBeenCalled();
+      expect(onSuccess).not.toHaveBeenCalled();
 
     });
 
@@ -63,8 +82,8 @@ describe('Service: FoodTrucks', function () {
       $httpBackend.expectGET('api/trucks/search?address=555+Eddy+St').respond({});
       $httpBackend.expectGET('api/trucks/search?address=570+Eddy+St').respond({});
       
-      var firstRequest = FoodTrucks.fetch(false, false , '555 Eddy St');
-      var secondRequest = FoodTrucks.fetch(false, false , '570 Eddy St');
+      var firstRequest = FoodTrucks.fetch(false, false , '555 Eddy St'),
+        secondRequest = FoodTrucks.fetch(false, false , '570 Eddy St');
 
       $httpBackend.flush();
 

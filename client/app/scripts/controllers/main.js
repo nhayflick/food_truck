@@ -81,15 +81,34 @@ angular.module('foodTruckApp')
 
 		/**
 		 * @ngdoc function
-		 * @name focusOnTruck
+		 * @name onTruckClick
 		 * @description Find truck by id, set marker color to highligh state and reset remaining markers
 		 *
 		 * @param {string} targetId - key to match in truckMarkers colleciton
 		 * 
 		 */
 
-		function focusOnTruck(targetId) {
-			main.focusId = targetId;
+		function onTruckClick(targetId) {
+			main.focusId = parseInt(targetId);
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name highlightMarker
+		 * @description Updates leaflet truckMarkers to show a new highlighted marker
+		 *
+		 * @param {number} markerId - id of truckMarker to highlight
+		 * 
+		 */
+
+		function highlightMarker(markerId) {
+			angular.forEach(main.truckMarkers, function (truck, currId) {
+				if (parseInt(currId) === markerId) {
+					truck.icon.markerColor = 'blue';
+				} else {
+					truck.icon.markerColor = 'black';
+				}
+			});
 		}
 
 		// Bind settings and initial data to controller
@@ -104,10 +123,9 @@ angular.module('foodTruckApp')
 					enable: ['moveend'],
 					logic: 'emit'
 				},
-				markers: {
-
-				}
+				markers: {}
 			},
+			focusId: 0,
 			fetchByAddress: fetchByAddress
 		});
 
@@ -116,20 +134,20 @@ angular.module('foodTruckApp')
 
 		// Find focused Truck on click
 		$scope.$on('leafletDirectiveMarker.click', function(event, args){
-			focusOnTruck(args.modelName);
+			onTruckClick(args.modelName);
 		});
 
-		$scope.$watch('main.focusId', function(newValue, oldValue) {
-			if (newValue && newValue !== oldValue) {
-				angular.forEach(main.truckMarkers, function (truck, currId) {
-					if (parseInt(currId) === parseInt(newValue)) {
-						truck.icon.markerColor = 'blue';
-					} else {
-						truck.icon.markerColor = 'black';
-					}
-				});
+		// Update Focused Markers in Leaflet UI
+		$scope.$watch(
+			function () {
+  			return main.focusId;
+			}, 
+			function(newValue, oldValue) {
+				if (newValue && newValue !== oldValue) {
+					highlightMarker(newValue);
+				}
 			}
-		})
+		);
 
 		fetchNearbyFoodTrucks();
 	});

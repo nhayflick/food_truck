@@ -9,14 +9,13 @@
 angular.module('foodTruckApp')
 	.directive('ftTrucksList', function() {
 		return {
-			scope: {},
-			bindToController: {
+			scope: {
 				ftTrucks: '=',
 				ftFocusId: '='
 			},
+			bindToController: true,
 			restrict: 'E',
 			controller: function ftTrucksListCtrl() {
-				var ftTrucksList = this;
 			},
 			controllerAs: 'trucksList',
 			templateUrl: 'views/directives/trucks-list.html'

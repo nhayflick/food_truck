@@ -404,6 +404,21 @@ module.exports = function (grunt) {
         configFile: 'test/karma.conf.js',
         singleRun: true
       }
+    },
+    protractor: {
+      options: {
+        keepAlive: true,
+        configFile: "test/protractor.conf.js"
+      },
+      run: {}
+    },
+    protractor_webdriver: {
+        start: {
+            options: {
+                path: 'node_modules/protractor/bin/',
+                command: 'webdriver-manager start'
+            }
+        }
     }
   });
 
@@ -434,7 +449,9 @@ module.exports = function (grunt) {
     'concurrent:test',
     'autoprefixer',
     'connect:test',
-    'karma'
+    'karma',
+    'protractor_webdriver',
+    'protractor:run'
   ]);
 
   grunt.registerTask('build', [
@@ -461,4 +478,6 @@ module.exports = function (grunt) {
   ]);
 
   grunt.loadNpmTasks('grunt-connect-proxy');
+  grunt.loadNpmTasks('grunt-protractor-webdriver');
+
 };
