@@ -1,6 +1,6 @@
 == SF Food Trucks (Front-End Track)
 
-Try It Live Here: https://whispering-savannah-5479.herokuapp.com/
+Project Hosted Here: https://whispering-savannah-5479.herokuapp.com
 
 = Assignment
 
