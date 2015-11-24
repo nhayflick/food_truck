@@ -82,18 +82,4 @@ describe('Main View', function() {
 		})
 	});
 
-	it('should load the browser\'s geo coordinates if available', function() {
-
-	});
-
-	it('should display appropriate empty state if no trucks are in bounds', function() {
-
-	});
-
-	it('should show an error if network activity fails', function() {
-
-	});
-
-
-
 });

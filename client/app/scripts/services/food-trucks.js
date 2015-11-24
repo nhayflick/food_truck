@@ -23,10 +23,8 @@ angular.module('foodTruckApp')
 		 * @param {number} lng - Query Longitude
 		 * @param {string} address - Query Address
 		 *
-		 * @returns {Array} list of food truck results
+		 * @returns {Object} - $q promise for the http request
 		 */
-
-		// TODO: Throttle this
 
 		this.fetch = function(lat, lng, address) {
 			var params,
@@ -36,11 +34,11 @@ angular.module('foodTruckApp')
 				params = {
 					lat: lat,
 					lng: lng
-				}
+				};
 			} else if (address) {
 				params = {
 					address: address
-				}
+				};
 			} else {
 				return false;
 			}
