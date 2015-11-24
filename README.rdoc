@@ -24,7 +24,11 @@ The app is tested & built using Grunt and hosted on Heroku.
 
 = Getting Started
 
-From the root folder run 'rails s' to start the API server. The Client App code is organized in the client folder. Running 'grunt serve' in this folder will spin up the app on localhost:9000. API requests are proxied over from the rails app on localhost:3000. If you are missing dependencies run 'bundle install' in the rails folder and 'npm install' + 'bower install' in the client folder. Use 'grunt test' run the test suites (note that selenium-webdriver is required for the automated browser tests).
+From the root folder run 'rails s' to start the API server. The Client App code is organized in the client folder. Running 'grunt serve' in this folder will spin up the app on localhost:9000. API requests are proxied over from the rails app on localhost:3000. 
+
+If you are missing dependencies run 'bundle install' in the rails folder and 'npm install' + 'bower install' in the client folder. 
+
+Use 'grunt test' run the test suites (note that selenium-webdriver is required for the automated browser tests).
 
 = Future Todos
 
