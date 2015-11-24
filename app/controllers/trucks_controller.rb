@@ -26,7 +26,7 @@ class TrucksController < ApplicationController
       begin
         @result[:address] = Geocoder.search(@result[:lat] + ',' + @result[:lng]).first.formatted_address
       rescue StandardError => error
-        return render :json => {:error => 'Geocoder Not Responding'}, :status => 422
+        return render :json => {:error => 'Geocoder Not Responding'}, :status => 500
       end
 
     #  RegularGeocoding Input
@@ -37,7 +37,7 @@ class TrucksController < ApplicationController
       begin
         coords = Geocoder.search(@result[:address], :bounds => [[36.8, -122.75], [37.8, -121.75]]).first.geometry['location']
       rescue StandardError => error
-        return render :json => {:error => 'Geocoder Not Responding'}, :status => 422
+        return render :json => {:error => 'Geocoder Not Responding'}, :status => 500
       end
 
       @result[:lat], @result[:lng] = coords['lat'].to_f, coords['lng'].to_f
