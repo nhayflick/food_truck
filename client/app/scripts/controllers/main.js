@@ -5,12 +5,13 @@
  * @name foodTruckApp.controller:MainCtrl
  * @description
  * # MainCtrl
- * Controller of the foodTruckApp
+ * Holds common functionality and data for the search bar, leaflet map and listings-sidebar 
  */
 angular.module('foodTruckApp')
-	.controller('MainCtrl', function($scope, FoodTrucks) {
+	.controller('MainCtrl', function($scope, $timeout, HttpNotifications, FoodTrucks) {
 
-		var main = this;
+		var main = this,
+			retryTimeout;
 
 		/**
 		 * @ngdoc function
@@ -19,11 +20,15 @@ angular.module('foodTruckApp')
 		 */
 
 		function fetchNearbyFoodTrucks() {
+			if (retryTimeout) {
+				$timeout.cancel(retryTimeout);
+			}
+
 
 			var lat = main.center.lat,
 				lng = main.center.lng;
 
-			FoodTrucks.fetch(lat, lng).then(onFetchSuccess, onFetchError);
+			FoodTrucks.fetch(lat, lng).then(onFetchSuccess, onFetchError, onFetchNotify);
 
 			// Clear Focus in UI
 			main.focusId = 0;
@@ -40,7 +45,11 @@ angular.module('foodTruckApp')
 		 */
 
 		function fetchByAddress(address) {
-			FoodTrucks.fetch(false, false, address).then(onFetchSuccess, onFetchError);
+			if (retryTimeout) {
+				$timeout.cancel(retryTimeout);
+			}
+
+			FoodTrucks.fetch(false, false, address).then(onFetchSuccess, onFetchError, onFetchNotify);
 		}
 
 		/**
@@ -62,6 +71,8 @@ angular.module('foodTruckApp')
 			});
 			main.center.lat = parseFloat(response.data.lat);
 			main.center.lng = parseFloat(response.data.lng);
+			// Clear All Old Error Notifications
+			HttpNotifications.clearAll();
 		}
 
 		/**
@@ -74,8 +85,45 @@ angular.module('foodTruckApp')
 		 */
 
 		function onFetchError(response) {
-			if (status > 0) {
-				main.serverError = true;
+			// Filter out any aborted requests
+			if (response.status === -1 && response.config.timeout.$$state.status === 1) {
+				return false;
+			}
+			// Alert Errors 
+			switch (response.status) {
+				case -1:
+					HttpNotifications.set(-1, 'Internet Connection Unavailable. Retrying Momentarily...');
+					// Retry Request
+					var params = response.config.params;
+					retryTimeout = $timeout(function() {
+						if (params.address) {
+							fetchByAddress(params.address);
+						} else {
+							fetchNearbyFoodTrucks();
+						}
+					}, 8000);
+					break;
+				case 422:
+					HttpNotifications.set(422, 'Bad search query. Please try another location.');
+					break;
+				case 500:
+					HttpNotifications.set(500, 'We Are Experiencing Temporary Server Issues. Please Try Again Later.');
+					break;
+			}
+		}
+
+		/**
+		 * @ngdoc function
+		 * @name onFetchNotify
+		 * @description Notification handling for long-running food_trucks api response
+		 *
+		 * @param {Object} response - notification object
+		 * 
+		 */
+
+		function onFetchNotify(response) {
+			if (!response.status) {
+				HttpNotifications.set(-1, 'This seems to be taking a while...');
 			}
 		}
 
@@ -102,7 +150,7 @@ angular.module('foodTruckApp')
 		 */
 
 		function highlightMarker(markerId) {
-			angular.forEach(main.truckMarkers, function (truck, currId) {
+			angular.forEach(main.truckMarkers, function(truck, currId) {
 				if (parseInt(currId) === markerId) {
 					truck.icon.markerColor = 'blue';
 				} else {
@@ -126,22 +174,25 @@ angular.module('foodTruckApp')
 				markers: {}
 			},
 			focusId: 0,
-			fetchByAddress: fetchByAddress
+			fetchByAddress: fetchByAddress,
+			httpNotifications: HttpNotifications
 		});
 
 		// Fetch Trucks when movement stops
 		$scope.$on('leafletDirectiveMap.moveend', fetchNearbyFoodTrucks);
 
 		// Find focused Truck on click
-		$scope.$on('leafletDirectiveMarker.click', function(event, args){
+		$scope.$on('leafletDirectiveMarker.click', function(event, args) {
 			onTruckClick(args.modelName);
 		});
 
 		// Update Focused Markers in Leaflet UI
 		$scope.$watch(
-			function () {
-  			return main.focusId;
-			}, 
+			// watch for changes on 'main.focusId'
+			function() {
+				return main.focusId;
+			},
+			// handler function
 			function(newValue, oldValue) {
 				if (newValue && newValue !== oldValue) {
 					highlightMarker(newValue);

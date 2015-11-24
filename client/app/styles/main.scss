@@ -17,6 +17,7 @@ html, body, .outer-container-main {
 /* Space out content a bit */
 body {
   padding-bottom: 64px;
+  background-color: #efefef;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -127,7 +128,18 @@ body {
   font-size: 14px;
 }
 
-.list-group-item {
+.leaflet-marker-icon.center-marker {
+	position: absolute; 
+	top: 50%; 
+	left: 50%;
+	margin-left: -12px; 
+	margin-top: -41px; 
+	width: 25px; 
+	height: 41px; 
+	z-index: 383; 
+}
+
+.list-group-item:not(.empty-state) {
   background-color: #222;
   color: white;
   border: 1px solid #545454;

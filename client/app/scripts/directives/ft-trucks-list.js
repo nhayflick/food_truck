@@ -15,8 +15,7 @@ angular.module('foodTruckApp')
 			},
 			bindToController: true,
 			restrict: 'E',
-			controller: function ftTrucksListCtrl() {
-			},
+			controller: function ftTrucksListCtrl() {},
 			controllerAs: 'trucksList',
 			templateUrl: 'views/directives/trucks-list.html'
 		};

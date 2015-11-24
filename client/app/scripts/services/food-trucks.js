@@ -8,101 +8,124 @@
  * Factory to instantiate a foodTrucks singleton
  */
 angular.module('foodTruckApp')
-  .factory('FoodTrucks', function ($http, $q) {
+	.factory('FoodTrucks', function($http, $q, $timeout) {
 
-    var _canceler;
+		var _canceler;
 
-    /**
-     * @ngdoc method
-     * @name FoodTrucks#fetch
-     *
-     * @description
-     * Fetch a list of food trucks from the API
-     *
-     * @param {number} lat - Query Latitude
-     * @param {number} lng - Query Longitude
-     * @param {string} address - Query Address
-     *
-     * @returns {Array} list of food truck results
-     */
+		/**
+		 * @ngdoc method
+		 * @name FoodTrucks#fetch
+		 *
+		 * @description
+		 * Fetch a list of food trucks from the API
+		 *
+		 * @param {number} lat - Query Latitude
+		 * @param {number} lng - Query Longitude
+		 * @param {string} address - Query Address
+		 *
+		 * @returns {Array} list of food truck results
+		 */
 
-     // TODO: Throttle this
+		// TODO: Throttle this
 
-    this.fetch = function (lat, lng, address) {
-      var params;
+		this.fetch = function(lat, lng, address) {
+			var params,
+				_request;
 
-      if (lat && lng) {
-        params = {
-          lat: lat, 
-          lng: lng
-        }
-      } else if (address) {
-        params = {
-          address: address
-        }
-      } else {
-        return false;
-      }
-      if (_canceler) {
-        _canceler.resolve();
-      }
-      _canceler = $q.defer();
-      return $http({
-        method: 'GET',
-        url: 'api/trucks/search',
-        timeout: _canceler.promise,
-        params: params
-      });
-    };
+			if (lat && lng) {
+				params = {
+					lat: lat,
+					lng: lng
+				}
+			} else if (address) {
+				params = {
+					address: address
+				}
+			} else {
+				return false;
+			}
 
-     /**
-     * @ngdoc method
-     * @name FoodTrucks#getMarkers
-     *
-     * @description
-     * Transform a list of food trucks into a Leaflet marker dictionary
-     *
-     * @param {Array} trucks - Collection of food trucks
-     *
-     * @returns {Object} Leaflet marker dictionary of trucks
-     */
+			// Cancel outstanding requests
+			if (_canceler) {
+				_canceler.resolve();
+			}
+			_canceler = $q.defer();
 
-    this.getMarkers = function (trucks) {
-      var markers = {};
+			// Notify if response is lagging
+			$timeout(function() {
+				_request.notify({});
+			}, 5000);
 
-      if (!trucks) {return markers;}
+			_request = $q.defer();
 
-      trucks.forEach(function(truck) {
-        // Only include trucks with valid locations
-        if (!truck.lat || !truck.lng) {
-          return false;
-        }
+			$http({
+					method: 'GET',
+					url: 'api/trucks/search',
+					timeout: _canceler.promise,
+					params: params
+				})
+				// Success
+				.then(function(data) {
+					_request.resolve(data);
+					// Fail
+				}, function(data) {
+					_request.reject(data);
+				});
 
-        var currMarker = {
-          lat: parseFloat(truck.lat),
-          lng: parseFloat(truck.lng),
-          draggable: false,
-          focus: true,
-          title: truck.name,
-          label: {
-            message: truck.name,
-            options: {
-              noHide: true,
-            }
-          },
-          icon: {
-              icon: 'cutlery',
-              type: 'awesomeMarker',
-              markerColor: 'black',
-              iconColor: 'white'
-          },
-        };
+			return _request.promise;
+		};
 
-        markers[truck.id] = currMarker;
-      });
+		/**
+		 * @ngdoc method
+		 * @name FoodTrucks#getMarkers
+		 *
+		 * @description
+		 * Transform a list of food trucks into a Leaflet marker dictionary
+		 *
+		 * @param {Array} trucks - Collection of food trucks
+		 *
+		 * @returns {Object} Leaflet marker dictionary of trucks
+		 */
 
-      return markers;
-    };
+		this.getMarkers = function(trucks) {
+			var markers = {};
 
-    return this;
-  });
+			if (!trucks) {
+				return markers;
+			}
+
+			trucks.forEach(function(truck) {
+				// Only include trucks with valid locations
+				if (!truck.lat || !truck.lng) {
+					return false;
+				}
+
+				var currMarker = {
+					lat: parseFloat(truck.lat),
+					lng: parseFloat(truck.lng),
+					draggable: false,
+					focus: true,
+					title: truck.name,
+					label: {
+						message: truck.name,
+						options: {
+							noHide: true,
+						}
+					},
+					icon: {
+						icon: 'cutlery',
+						type: 'awesomeMarker',
+						markerColor: 'black',
+						iconColor: 'white'
+					},
+				};
+
+				markers[truck.id] = currMarker;
+			});
+
+			return markers;
+		};
+
+		return this;
+
+	});
