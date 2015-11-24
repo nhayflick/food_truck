@@ -17,7 +17,7 @@ For mapping I used the Leaflet JavaScript Library. Users can search for nearby t
 
 Another aspect of the project I wanted to focus on was intelligent error handling of network requests on the client side. Since the app's UI so heavily relies on API requests, I set up a global http-notifications singleton that is utilized during AJAX requests to report network status to the user. If a request fails due to loss of internet connectivity, the app displays a message to the end user and retries the request in the background after 8 seconds.
 
-I opted to use the Rails-API framework to set up a basic backend and then scraped the Food Truck data set from DataSF. While I could have had my client app talk directly to the DataSF JSON endpoint, setting up my own backend gave me much more freedom to geocode the data set and customize the api responses to my client app.
+I opted to use the Rails-API framework to set up a basic backend and then scraped the Food Truck data set from DataSF. While I could have had my client app talk directly to the DataSF JSON endpoint, setting up my own backend gave me much more freedom to geocode the data set and customize the API behavior for my client app.
 
 The app is tested & built using Grunt and hosted on Heroku.
  
