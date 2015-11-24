@@ -107,7 +107,7 @@ angular.module('foodTruckApp')
 					HttpNotifications.set(422, 'Bad search query. Please try another location.');
 					break;
 				case 500:
-					HttpNotifications.set(500, 'We Are Experiencing Temporary Server Issues. Please Try Again Later.');
+					HttpNotifications.set(500, 'We Are Experiencing Temporary Server Issues.');
 					break;
 			}
 		}

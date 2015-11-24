@@ -13,6 +13,8 @@ gem 'pg'
 
 gem 'geocoder'
 
+gem 'figaro'
+
 
 
 # To use ActiveModel has_secure_password
