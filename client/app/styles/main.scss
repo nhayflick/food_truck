@@ -96,11 +96,37 @@ body {
 }
 
 /* App Layout*/
+
 .sidebar {
-  width: 350px;
-  height: 100%;
-  float: right;
+  width: 100%;
+  height: 40%;
   overflow: scroll;
+}
+
+/* Full Height Map */
+.angular-leaflet-map {
+  height: 80%;
+}
+
+/* Place Map Under Listings on mobile */
+@media screen and (min-width: 768px) {
+  .sidebar {
+    width: 350px;
+    height: 58%;
+    float: right;
+  }
+  .angular-leaflet-map {
+    height: 100%;
+    margin-right: 0;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .list-group {
+    max-height: 34%;  
+    overflow: scroll;
+    margin-bottom: 0;
+  }
 }
 
 /* Override Navbar*/
@@ -117,11 +143,6 @@ body {
   color: white;
 }
 
-/* Full Height Map */
-.angular-leaflet-map {
-  height: 100%;
-  margin-right: 350px;
-}
 
 /* Override Awesome-Marker */
 .awesome-marker i {
