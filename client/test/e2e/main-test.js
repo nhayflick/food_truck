@@ -28,7 +28,7 @@ describe('Main View', function() {
 
 	it('should expand the correct truck listing when the marker is clicked on', function() {
 
-		var testMarker = element(by.css('.awesome-marker-icon-black')),
+		var testMarker = element.all(by.css('.awesome-marker-icon-black')).first(),
 			truckListings = element(by.css('ft-trucks-list'));
 
 		testMarker.getAttribute('title').then(function(attr) {
@@ -46,7 +46,7 @@ describe('Main View', function() {
 
 	it('should highlight the marker when a listing is clicked on', function() {
 
-		var testListingItem = element(by.css('ft-trucks-list .list-group-item'));
+		var testListingItem = element.all(by.css('ft-trucks-list .list-group-item')).first();
 
 		testListingItem.getAttribute('data-truck-title').then(function(attr) {
 			var title = attr,
@@ -67,14 +67,14 @@ describe('Main View', function() {
 	it('should load a new set of markers when a new address is searched for', function() {
 		var searchBar = element(by.css('#location-search-input')),
 			searchButton = element(by.css('#location-search-btn')),
-			firstMarker = element(by.css('.awesome-marker-icon-black'));
+			firstMarker = element.all(by.css('.awesome-marker-icon-black')).first();
 
 		firstMarker.getAttribute('title').then(function(attr) {
 			var firstTitle = attr;
 			searchBar.clear().then(function() {
 				searchBar.sendKeys('1100-1198 Indiana St, San Francisco, CA 94107, USA').then(function() {
 					searchButton.click().then(function() {
-						var newFirstMarker = element(by.css('.awesome-marker-icon-black'));
+						var newFirstMarker = element.all(by.css('.awesome-marker-icon-black')).first();
 						expect(newFirstMarker.getAttribute('title')).not.toEqual(firstTitle);
 					});
 				});
