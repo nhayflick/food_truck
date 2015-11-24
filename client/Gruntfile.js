@@ -18,7 +18,7 @@ module.exports = function (grunt) {
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
-    dist: 'dist'
+    dist: '../public'
   };
 
   // Define the configuration for all the tasks
@@ -161,7 +161,10 @@ module.exports = function (grunt) {
             '<%= yeoman.dist %>/{,*/}*',
             '!<%= yeoman.dist %>/.git*'
           ]
-        }]
+        }],
+        options: {
+          force: true
+        }
       },
       server: '.tmp'
     },
@@ -362,7 +365,8 @@ module.exports = function (grunt) {
             '*.html',
             'views/{,*/}*.html',
             'images/{,*/}*.{webp}',
-            'fonts/*'
+            'fonts/*',
+            'styles/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
           ]
         }, {
           expand: true,
@@ -374,13 +378,20 @@ module.exports = function (grunt) {
           cwd: '.',
           src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
           dest: '<%= yeoman.dist %>'
+        },
+        {
+        //for leaflet markers
+          expand: true,
+          cwd: 'bower_components/Leaflet.awesome-markers/dist',
+          src: 'images/*',
+          dest: '<%= yeoman.dist %>/styles'
         }]
       },
       styles: {
         expand: true,
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
-        src: '{,*/}*.css'
+        src: '{,*/}*.css',
       }
     },
 
@@ -394,7 +405,7 @@ module.exports = function (grunt) {
       ],
       dist: [
         'compass:dist',
-        // 'imagemin',
+        'imagemin',
         'svgmin'
       ]
     },
